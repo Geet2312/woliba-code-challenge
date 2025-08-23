@@ -85,6 +85,11 @@ class OtpController extends Controller
 
     }
 
+    /**
+     * @param VerifyEmailOtpRequest $request
+     * @param VerifyEmailOtpAction $action
+     * @return JsonResponse
+     */
     public function verifyEmailOtp(VerifyEmailOtpRequest $request, VerifyEmailOtpAction $action): JsonResponse
     {
         try {
