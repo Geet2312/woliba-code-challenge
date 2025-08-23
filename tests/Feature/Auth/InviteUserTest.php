@@ -21,12 +21,13 @@ function inviteUser(array $overrides = []): TestResponse
         'first_name' => fake()->firstName(),
         'last_name' => fake()->lastName(),
         'email' => fake()->unique()->userName() . '@dummy.com',
+        'is_magic_link' => true,
     ], $overrides);
 
     return test()->postJson('/api/invite', $payload);
 }
 
-test('sends an invitation email when inviting a new user', function () {
+test('sends a magic link invitation email when inviting a new user', function () {
 
     $firstName = fake()->firstName();
     $lastName = fake()->lastName();
@@ -49,6 +50,29 @@ test('sends an invitation email when inviting a new user', function () {
         return $notifiable->routes['mail'] === $invitation->email
             && $notification->invitation->is($invitation);
     });
+});
+
+test('invites as user without sending a magic link', function () {
+    $firstName = fake()->firstName();
+    $lastName = fake()->lastName();
+    $email = fake()->unique()->userName() . '@dummy.com';
+
+    $response = inviteUser([
+        'first_name' => $firstName,
+        'last_name' => $lastName,
+        'email' => $email,
+        'is_magic_link' => false,
+    ]);
+
+    $response->assertStatus(202);
+    $invitation = Invitation::where('email', $email)->first();
+    expect($invitation)->not->toBeNull()
+        ->and($invitation->first_name)->toBe($firstName)
+        ->and($invitation->last_name)->toBe($lastName)
+        ->and($invitation->email)->toBe($email);
+
+    Notification::assertNothingSent();
+    
 });
 
 test('does not resend invitation if already used', function () {
