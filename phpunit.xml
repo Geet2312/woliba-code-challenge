@@ -29,5 +29,6 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="JWT_SECRET" value="base64:WqM2mT4Q+4+Zxw0Gqf8q2cN3pXyX4n7m8y5vQY5mJmA="/>
     </php>
 </phpunit>
