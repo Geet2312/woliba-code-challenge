@@ -21,9 +21,10 @@ class MagicLinkController extends Controller
      */
     public function show(Request $request, VerifyMagicLinkAction $action): JsonResponse
     {
-        $token = $request->query('token', '');
 
         try {
+            $token = $request->query('token', '');
+
             $result = $action->execute($token);
 
             if ($result === null) {
