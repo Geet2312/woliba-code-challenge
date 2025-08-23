@@ -94,7 +94,19 @@ class InvitationService
         $invitation->token_used_at = now();
         $invitation->save();
     }
-    
+
+    /**
+     * Find invitation by email 
+     * @param string $email
+     * @return Invitation|null
+     */
+    public function findByEmail(string $email): ?Invitation
+    {
+        return Invitation::where('email', $email)
+            ->whereNull('token_used_at')
+            ->where('token_expires_at', '>', now())
+            ->first();
+    }
 
     /**
      * Normalize email by trimming whitespace and converting to lowercase.
