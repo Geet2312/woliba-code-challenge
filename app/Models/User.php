@@ -76,9 +76,22 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-    
+
+    /**
+     * @param $value
+     * @return string|null
+     */
     public function getDobAttribute($value): ?string
     {
         return $value ? Carbon::parse($value)->format('m/d/Y') : null;
+    }
+
+    /**
+     * @param $value
+     * @return void
+     */
+    public function setDobAttribute($value): void
+    {
+        $this->attributes['dob'] = $value ? Carbon::createFromFormat('m/d/Y', $value)->toDateString() : null;
     }
 }
