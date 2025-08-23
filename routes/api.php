@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\InvitationController;
-use App\Http\Controllers\MagicLinkController;
+use App\Http\Controllers\Auth\InvitationController;
+use App\Http\Controllers\Auth\MagicLinkController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/invite', [InvitationController::class, 'store']);

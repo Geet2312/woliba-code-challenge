@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Actions\InviteUserAction;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvitationRequest;
 use Illuminate\Http\JsonResponse;
 
