@@ -41,6 +41,6 @@ class Invitation extends Model
     
     public function isPending(): bool
     {
-        return !$this->isUsed() && !$this->isExpired();
+        return !$this->isUsed() && $this->isExpired();
     }
 }
