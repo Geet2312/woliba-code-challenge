@@ -12,5 +12,5 @@ Route::get('/magic-link/user', [MagicLinkController::class, 'show'])
     ->middleware('signed');
 
 Route::middleware('auth:api')->group(function () {
-    Route::post('/user/profile', [ProfileController::class, 'update']);
+    Route::put('/user/profile', [ProfileController::class, 'update']);
 });
