@@ -32,10 +32,12 @@ test('valid token returns limited profile and burns token', function () {
     ]);
     
     $link = signedMagicLink($invitation->token);
-    
     $response = test()->getJson($link);
     $response->assertOk()
-        ->assertJsonStructure(['user' => ['first_name', 'last_name', 'email']])
+        ->assertJsonStructure([
+            'user' => ['first_name', 'last_name', 'email'],
+            'token',
+        ])
         ->assertJsonPath('user.email', $email);
     
     $invitation->refresh();

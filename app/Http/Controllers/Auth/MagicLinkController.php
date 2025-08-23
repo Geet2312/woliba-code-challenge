@@ -24,9 +24,9 @@ class MagicLinkController extends Controller
         $token = $request->query('token', '');
 
         try {
-            $user = $action->execute($token);
+            $result = $action->execute($token);
 
-            if ($user === null) {
+            if ($result === null) {
                 // Invalid / expired / already used
                 return response()->json([
                     'message' => 'This link is invalid or has expired.',
@@ -34,7 +34,8 @@ class MagicLinkController extends Controller
             }
 
             return response()->json([
-                'user' => new UserResource($user),
+                'user' => new UserResource($result['user']),
+                'token' => $result['token'],
             ]);
 
         } catch (Throwable $e) {
