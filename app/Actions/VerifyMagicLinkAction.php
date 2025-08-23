@@ -2,12 +2,11 @@
 
 namespace App\Actions;
 
-use App\Models\User;
 use App\Services\InvitationService;
 use App\Services\UserService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class VerifyMagicLinkAction
 {
@@ -23,12 +22,13 @@ class VerifyMagicLinkAction
      * Burns token and returns (created or existing) user.
      *
      * @param string $token
-     * @return JsonResponse|User
+     * @return array|null
      * @throws ValidationException
      */
-    public function execute(string $token): ?User
+    public function execute(string $token): ?array
     {
         $invitation = $this->service->findValidByToken($token);
+        
         if ($invitation === null) {
             Log::warning("Invalid or expired token used: {$token}");
 
@@ -37,7 +37,10 @@ class VerifyMagicLinkAction
 
         $this->service->markUsed($invitation);
 
-        return $this->userService->firstOrCreateFromInvitation($invitation);
+        $user = $this->userService->firstOrCreateFromInvitation($invitation);
+        $jwt = JWTAuth::fromUser($user);
+        
+        return ['user' => $user, 'token' => $jwt];
     }
 
 }
