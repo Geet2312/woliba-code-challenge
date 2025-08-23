@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SentOtpRequest extends FormRequest
+class VerifyEmailOtpRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,8 @@ class SentOtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email:rfc,dns', 'max:255',],
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255'],
+            'otp' => ['required', 'digits:6'],
         ];
     }
 
@@ -33,8 +34,7 @@ class SentOtpRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'email' => $this->query('email') ? strtolower(trim($this->query('email'))) : null,
-
+            'email' => $this->email ? strtolower(trim($this->email)) : null,
         ]);
     }
 }

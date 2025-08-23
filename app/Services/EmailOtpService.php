@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\EmailOtp;
-use App\Models\Invitation;
 use App\Notifications\SendEmailOtp;
 use Illuminate\Support\Facades\Notification;
 use Random\RandomException;
@@ -13,18 +12,12 @@ class EmailOtpService
 
     /**
      * @param string $email
-     * @return true|null
+     * @return bool
      * @throws RandomException
      */
-    public function generateOtp(string $email): ?true
+    public function generateOtp(string $email): bool
     {
-        $invitation = Invitation::where('email', $email)->first();
-
-        if ($invitation === null) {
-            return null;
-        }
-
-        $ttl = (int) config('constants.email_otp.token_expiration_minutes');
+        $ttl = (int)config('constants.email_otp.token_expiration_minutes');
 
         $otp = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
@@ -38,6 +31,37 @@ class EmailOtpService
         Notification::route('mail', $email)->notify(new SendEmailOtp($otp, $ttl));
 
         return true;
+    }
+
+    /**
+     * @param string $email
+     * @param $otp
+     * @return bool
+     */
+    public function verifyAndBurn(string $email, $otp): bool
+    {
+        $record = EmailOtp::where('email', $email)
+            ->whereNull('used_at')
+            ->latest()
+            ->first();
+
+        if ($record === null) {
+            return false;
+        }
+
+        if ($record->isExpired()) {
+            return false;
+        }
+        
+        if(!hash_equals((string)$record->otp, (string) $otp)) {
+            return false;
+        }
+
+        $record->used_at = now();
+        $record->save();
+
+        return true;
+
     }
 
 }
