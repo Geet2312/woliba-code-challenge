@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\VerifyMagicLinkAction;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\MagicLinkUserResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -35,7 +35,7 @@ class MagicLinkController extends Controller
             }
 
             return response()->json([
-                'user' => new UserResource($result['user']),
+                'user' => new MagicLinkUserResponse($result['user']),
                 'token' => $result['token'],
             ]);
 

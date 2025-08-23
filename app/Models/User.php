@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,7 +51,7 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'dob' => 'date',
+            'dob' => 'date:Y-m-d',
             'confirmation_flag' => 'boolean',
             'registration_complete' => 'boolean',
         ];
@@ -74,5 +75,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+    
+    public function getDobAttribute($value): ?string
+    {
+        return $value ? Carbon::parse($value)->format('m/d/Y') : null;
     }
 }
