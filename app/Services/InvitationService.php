@@ -69,11 +69,32 @@ class InvitationService
         $ttl = (int)config('constants.invitation.token_expiration_minutes', 60);
 
         return URL::temporarySignedRoute(
-            'magic-link.user',
+            'api.magic-link.user',
             now()->addMinutes($ttl),
             ['token' => $invitation->token]
         );
     }
+    
+    /**
+     * Find a valid (not used, not expired) invitation by its token.
+     */
+    public function findValidByToken(String $token): ?Invitation
+    {
+        return Invitation::where('token', $token)
+            ->whereNull('token_used_at')
+            ->where('token_expires_at', '>', now())
+            ->first();
+    }
+
+    /**
+     * Mark the invitation as used by setting the token_used_at timestamp.
+     */
+    public function markUsed(Invitation $invitation): void
+    {
+        $invitation->token_used_at = now();
+        $invitation->save();
+    }
+    
 
     /**
      * Normalize email by trimming whitespace and converting to lowercase.
