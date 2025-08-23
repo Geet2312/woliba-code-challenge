@@ -14,7 +14,7 @@ Route::get('/magic-link/user', [MagicLinkController::class, 'show'])
 
 Route::controller(OtpController::class)->group(function () {
     Route::get('/verify-email', 'verifyEmail');   
-    Route::get('/send-otp', 'sendOtp');     
+    Route::get('/send-otp', 'sendEmailOtp');     
     Route::get('/verify-otp', 'verifyOtp');
 });
 
