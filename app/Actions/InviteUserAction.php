@@ -22,12 +22,12 @@ class InviteUserAction
      * @param string $lastName
      * @param string $email
      */
-    public function execute(string $firstName, string $lastName, string $email): void
+    public function execute(string $firstName, string $lastName, string $email, bool $isMagicLink): void
     {
         try {
             ['invitation' => $invitation, 'shouldSend' => $shouldSend] = $this->service->refreshOrCreate($firstName, $lastName, $email);
 
-            if ($shouldSend) {
+            if ($shouldSend & $isMagicLink) {
                 $signedLink = $this->service->makeSignedLink($invitation);
 
                 // Route to invitee's email

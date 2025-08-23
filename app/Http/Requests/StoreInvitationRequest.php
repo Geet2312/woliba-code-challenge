@@ -26,6 +26,7 @@ class StoreInvitationRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email:rfc,dns', 'max:255'],
+            'is_magic_link' => ['required', 'boolean']
         ];
     }
     

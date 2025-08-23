@@ -19,7 +19,13 @@ class InvitationController extends Controller
     public function store(StoreInvitationRequest $request, InviteUserAction $action): JsonResponse
     {
         $data = $request->validated();
-        $action->execute($data['first_name'], $data['last_name'], $data['email']);
+        $action->execute($data['first_name'], $data['last_name'], $data['email'], $data['is_magic_link'] ?? false);
+
+        if (!$request->boolean('is_magic_link')) {
+            return response()->json([
+                'message' => 'User has been invited without sending a magic link email.',
+            ], 202);
+        }
 
         return response()->json([
             'message' => 'If the email is valid, an invitation will be sent.',
