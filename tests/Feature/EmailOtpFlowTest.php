@@ -37,18 +37,22 @@ test('verify-email returns profile data', function () {
     $response = test()->getJson('/api/verify-email?email=' . urlencode($email));
 
     $response->assertStatus(200)
-        ->assertJsonPath('user.email', $email)
-        ->assertJsonStructure(['user' => ['first_name', 'last_name', 'email']]);
+        ->assertJsonPath('data.user.email', $email)
+        ->assertJsonStructure(
+            [
+                'data' => [
+                    'user' => ['first_name', 'last_name', 'email']
+                ]
+            ]);
 
 });
 
 test('verify-email returns 404 with invalid email', function () {
     $email = fake()->unique()->userName() . '@dummy.com';
 
-    $res = test()->getJson('/api/verify-email?email=' . urlencode($email));
-
-    $res->assertStatus(404)
-        ->assertJson(['message' => 'No invitation found for the provided email.']);
+    $response = test()->getJson('/api/verify-email?email=' . urlencode($email));
+    $response->assertStatus(404)
+        ->assertJson(['data'=> ['message' => 'No invitation found for the provided email.']]);
 });
 
 test('verify-email returns 500 on unexpected error', function () {
@@ -74,9 +78,9 @@ test('send-otp stores otp and sends email for invited email', function () {
 
     [$email] = invitedEmail();
 
-    $res = test()->getJson('/api/send-otp?email=' . urlencode($email));
+    $response = test()->getJson('/api/send-otp?email=' . urlencode($email));
 
-    $res->assertStatus(202);
+    $response->assertStatus(202);
 
     Notification::assertSentOnDemand(SendEmailOtp::class, function ($notification, $channels, $notifiable) use ($email) {
         return isset($notifiable->routes['mail'])
@@ -93,9 +97,9 @@ test('send-otp does not send otp for non-invited email', function () {
 
     $email = fake()->unique()->userName() . '@dummy.com';
 
-    $res = test()->getJson('/api/send-otp?email=' . urlencode($email));
+    $response = test()->getJson('/api/send-otp?email=' . urlencode($email));
 
-    $res->assertStatus(202);
+    $response->assertStatus(202);
     Notification::assertNothingSent();
 
     expect(EmailOtp::where('email', $email)->exists())->toBeFalse();
@@ -132,11 +136,17 @@ test('verify-otp  finds invitee, burns otp and returns JWT', function () {
         'used_at' => null,
     ]);
 
-    $res = test()->getJson('/api/verify-otp?email=' . urlencode($email) . '&otp=' . $otp);
+    $response = test()->getJson('/api/verify-otp?email=' . urlencode($email) . '&otp=' . $otp);
 
-    $res->assertOk()
-        ->assertJsonStructure(['user' => ['first_name', 'last_name', 'email'], 'token'])
-        ->assertJsonPath('user.email', $email);
+    $response->assertOk()
+        ->assertJsonStructure([
+                'data' => [
+                    'user' => ['first_name', 'last_name', 'email'],
+                    'token'
+                ]
+            ]
+        )
+        ->assertJsonPath('data.user.email', $email);
 
     // OTP burned
     $record = latestOtpFor($email);
@@ -158,9 +168,9 @@ test('verify-otp returns 422 for wrong otp', function () {
         'used_at' => null,
     ]);
 
-    $res = test()->getJson('/api/verify-otp?email=' . urlencode($email) . '&otp=654321');
+    $response = test()->getJson('/api/verify-otp?email=' . urlencode($email) . '&otp=654321');
 
-    $res->assertStatus(422)
+    $response->assertStatus(422)
         ->assertJson(['message' => 'Invalid or expired OTP.']);
 
     $record = latestOtpFor($email);
@@ -177,9 +187,9 @@ test('verify-otp returns 422 for expired otp', function () {
         'used_at' => null,
     ]);
 
-    $res = test()->getJson('/api/verify-otp?email=' . urlencode($email) . '&otp=000111');
+    $response = test()->getJson('/api/verify-otp?email=' . urlencode($email) . '&otp=000111');
 
-    $res->assertStatus(422)
+    $response->assertStatus(422)
         ->assertJson(['message' => 'Invalid or expired OTP.']);
 
     $record = latestOtpFor($email);
@@ -206,7 +216,7 @@ test('verify-otp  return 422 when reused otp', function () {
 });
 
 test('verify-otp returns 500 on unexpected error', function () {
-    
+
     $email = fake()->unique()->userName() . '@dummy.com';
     $otp = '123456';
 
