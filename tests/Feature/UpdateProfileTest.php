@@ -5,16 +5,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-function jwtHeader(User $user): array
-{
-    $token = JWTAuth::fromUser($user);
-
-    return [
-        'Authorization' => "Bearer $token",
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/json',
-    ];
-}
 
 test('user can update profile with valid token', function () {
     $user = User::factory()->create();
