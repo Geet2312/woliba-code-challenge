@@ -111,4 +111,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(WellbeingPillar::class);
     }
+
+    /**
+     * @return void
+     */
+    public function markRegistrationComplete(): void
+    {
+        $this->update(['registration_complete' => true]);
+    }
 }
