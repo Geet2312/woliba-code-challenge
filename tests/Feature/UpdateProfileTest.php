@@ -20,7 +20,7 @@ test('user can update profile with valid token', function () {
     ];
 
     $response = $this->withHeaders(jwtHeader($user))
-        ->putJson('/api/user/profile', $payload);
+        ->postJson('/api/user/profile', $payload);
 
     $response->assertStatus(200)
         ->assertJsonFragment([
@@ -45,7 +45,7 @@ test('user cannot update profile with invalid token', function () {
         'Authorization' => 'Bearer invalidToken',
         'Accept' => 'application/json',
         'Content-Type' => 'application/json',
-    ])->putJson('/api/user/profile', $payload);
+    ])->postJson('/api/user/profile', $payload);
 
     $response->assertStatus(401);
 });
@@ -63,7 +63,7 @@ test('user cannot update profile with missing token', function () {
     $response = $this->withHeaders([
         'Accept' => 'application/json',
         'Content-Type' => 'application/json',
-    ])->putJson('/api/user/profile', $payload);
+    ])->postJson('/api/user/profile', $payload);
 
     $response->assertStatus(401);
 });
@@ -80,7 +80,7 @@ test('user cannot update profile with invalid data', function () {
     ];
 
     $response = $this->withHeaders(jwtHeader($user))
-        ->putJson('/api/user/profile', $payload);
+        ->postJson('/api/user/profile', $payload);
 
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['password', 'dob']);
@@ -98,7 +98,7 @@ test('user cannot update profile with mismatched password confirmation', functio
     ];
 
     $response = $this->withHeaders(jwtHeader($user))
-        ->putJson('/api/user/profile', $payload);
+        ->postJson('/api/user/profile', $payload);
 
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['password']);
@@ -116,7 +116,7 @@ test('user dob must be a valid date format', function () {
     ];
 
     $response = $this->withHeaders(jwtHeader($user))
-        ->putJson('/api/user/profile', $payload);
+        ->postJson('/api/user/profile', $payload);
 
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['dob']);
@@ -133,7 +133,7 @@ test('user password is hashed when updated', function () {
         'contact_number' => '1234567890',
         'confirmation_flag' => true,
     ];
-    $this->withHeaders(jwtHeader($user))->putJson('/api/user/profile', $payload);
+    $this->withHeaders(jwtHeader($user))->postJson('/api/user/profile', $payload);
 
     $user->refresh();
 
