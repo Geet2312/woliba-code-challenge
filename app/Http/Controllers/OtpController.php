@@ -44,7 +44,9 @@ class OtpController extends Controller
             }
 
             return response()->json([
-                'user' => InvitationResource::make($invitation),
+                'data' =>[
+                    'user' => InvitationResource::make($invitation),
+                ],
             ]);
 
         } catch (Throwable $e) {
@@ -72,7 +74,9 @@ class OtpController extends Controller
             }
 
             return response()->json([
-                'message' => 'If the email is valid, an OTP has been sent.',
+                'data' =>[
+                    'message' => 'If the email is valid, an OTP has been sent.',
+                ]
             ], 202);
 
         } catch (Throwable $e) {

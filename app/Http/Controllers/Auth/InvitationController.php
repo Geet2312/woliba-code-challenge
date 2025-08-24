@@ -23,12 +23,17 @@ class InvitationController extends Controller
 
         if (!$request->boolean('is_magic_link')) {
             return response()->json([
-                'message' => 'User has been invited without sending a magic link email.',
+                'data' => [
+                    'message' => 'If the email is valid, user has been invited without sending a magic link email.',
+                ]
             ], 202);
         }
 
+        // Response for Magic Link
         return response()->json([
-            'message' => 'If the email is valid, an invitation will be sent.',
+            'data' => [
+                'message' => 'If the email is valid, an invitation will be sent.',
+            ]
         ], 202);
     }
 }
