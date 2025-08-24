@@ -30,7 +30,7 @@ class SendOtpRequest extends FormRequest
     /**
      * @return void
      */
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'email' => $this->query('email') ? strtolower(trim($this->query('email'))) : null,

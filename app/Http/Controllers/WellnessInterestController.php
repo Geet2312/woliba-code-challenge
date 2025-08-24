@@ -62,7 +62,7 @@ class WellnessInterestController extends Controller
                     'user' => UserResource::make($updatedUser),
                 ]
 
-            ], 200);
+            ]);
 
         } catch (Throwable $e) {
             Log::error('Failed to save Wellness Interest.', [

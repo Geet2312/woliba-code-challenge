@@ -7,7 +7,7 @@ function jwtHeader(User $user): array
     $token = JWTAuth::fromUser($user);
 
     return [
-        'Authorization' => "Bearer {$token}",
+        'Authorization' => "Bearer $token",
         'Accept'        => 'application/json',
         'Content-Type'  => 'application/json',
     ];

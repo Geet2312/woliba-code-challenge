@@ -26,7 +26,7 @@ class ProfileController extends Controller
      * @param UpdateProfileRequest $request
      * @return JsonResponse
      */
-    public function update(UpdateProfileRequest $request)
+    public function update(UpdateProfileRequest $request) : JsonResponse
     {
         try {
             $user = $request->user();

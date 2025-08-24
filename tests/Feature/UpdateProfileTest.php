@@ -32,7 +32,6 @@ test('user can update profile with valid token', function () {
 });
 
 test('user cannot update profile with invalid token', function () {
-    $user = User::factory()->create();
 
     $payload = [
         'password' => fake()->password(),
@@ -43,7 +42,7 @@ test('user cannot update profile with invalid token', function () {
     ];
 
     $response = $this->withHeaders([
-        'Authorization' => 'Bearer invalidtoken',
+        'Authorization' => 'Bearer invalidToken',
         'Accept' => 'application/json',
         'Content-Type' => 'application/json',
     ])->putJson('/api/user/profile', $payload);
@@ -52,7 +51,6 @@ test('user cannot update profile with invalid token', function () {
 });
 
 test('user cannot update profile with missing token', function () {
-    $user = User::factory()->create();
 
     $payload = [
         'password' => fake()->password(),

@@ -110,7 +110,7 @@ test('unexpected error returns 500 with generic message', function () {
 
     // Mock the action to throw a runtime exception
     $mock = Mockery::mock(VerifyMagicLinkAction::class);
-    $mock->shouldReceive('execute')->andThrow(new \RuntimeException('exception'));
+    $mock->shouldReceive('execute')->andThrow(new RuntimeException('exception'));
     app()->instance(VerifyMagicLinkAction::class, $mock);
 
     Log::shouldReceive('error')->once();

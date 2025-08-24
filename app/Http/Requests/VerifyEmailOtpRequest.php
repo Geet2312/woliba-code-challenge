@@ -31,7 +31,7 @@ class VerifyEmailOtpRequest extends FormRequest
     /**
      * @return void
      */
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'email' => $this->email ? strtolower(trim($this->email)) : null,

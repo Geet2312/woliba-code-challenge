@@ -60,7 +60,7 @@ class WellbeingPillarController extends Controller
                     'wellbeing_pillars' => WellbeingPillarResource::collection($updatedUser->wellbeingPillars),
                     'user' => UserResource::make($updatedUser)
                 ]
-            ], 200);
+            ]);
 
         } catch (Throwable $e) {
             Log::error('Failed to save Wellbeing Pillars.', [
