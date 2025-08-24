@@ -15,20 +15,20 @@ Route::get('/magic-link/user', [MagicLinkController::class, 'show'])
     ->middleware('signed');
 
 Route::controller(OtpController::class)->group(function () {
-    Route::get('/verify-email', 'verifyEmail');   
-    Route::get('/send-otp', 'sendEmailOtp');     
+    Route::get('/verify-email', 'verifyEmail');
+    Route::get('/send-otp', 'sendEmailOtp');
     Route::get('/verify-otp', 'verifyEmailOtp');
 });
 
 //Authenticate route
 Route::middleware('auth:api')->group(function () {
     Route::put('/user/profile', [ProfileController::class, 'update']);
-         
-        // Wellbeing interest
-        Route::get('/wellness-interests', [WellnessInterestController::class, 'index']);
-        Route::post('/wellness-interests', [WellnessInterestController::class, 'store']);
 
-        // Wellbeing Pillars
-        Route::get('/wellbeing-pillars', [WellbeingPillarController::class, 'index']);
-        Route::post('/wellbeing-pillars', [WellbeingPillarController::class, 'store']);
+    // Wellbeing interest
+    Route::get('/wellness-interests', [WellnessInterestController::class, 'index']);
+    Route::post('/wellness-interests', [WellnessInterestController::class, 'store']);
+
+    // Wellbeing Pillars
+    Route::get('/wellbeing-pillars', [WellbeingPillarController::class, 'index']);
+    Route::post('/wellbeing-pillars', [WellbeingPillarController::class, 'store']);
 });
