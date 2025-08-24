@@ -8,17 +8,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-function jwtHeader(User $user): array
-{
-    $token = JWTAuth::fromUser($user);
-
-    return [
-        'Authorization' => "Bearer $token",
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/json',
-    ];
-}
-
 function makeInterests(array $names): array
 {
     return collect($names)
@@ -42,7 +31,7 @@ test('list api returns 500 on unexpected error', function () {
     $user = User::factory()->create();
 
     $mock = Mockery::mock(WellnessInterestService::class);
-    $mock->shouldReceive('getInterests')->andThrow(new RuntimeException('boom'));
+    $mock->shouldReceive('getInterests')->andThrow(new RuntimeException('exception'));
     app()->instance(WellnessInterestService::class, $mock);
 
     Log::shouldReceive('error')->once();
@@ -81,7 +70,7 @@ test('returns user and interest on successfully save', function () {
     ], headers: jwtHeader($user));
 
     $response->assertOk()
-        ->assertJsonPath('message', 'Wellness interests updated successfully.')
+        ->assertJsonPath('message', 'Wellness Interests updated successfully.')
         ->assertJsonStructure([
             'data' => [
                 'wellness_interests' => [['id', 'name']],
@@ -95,7 +84,7 @@ test('save api returns 500 on unexpected error', function () {
     makeInterests(['Yoga', 'Meditation', 'Fitness']);
 
     $mock = Mockery::mock(SetUserWellnessInterestAction::class);
-    $mock->shouldReceive('execute')->andThrow(new RuntimeException('kaboom'));
+    $mock->shouldReceive('execute')->andThrow(new RuntimeException('exception'));
     app()->instance(SetUserWellnessInterestAction::class, $mock);
 
     Log::shouldReceive('error')->once();

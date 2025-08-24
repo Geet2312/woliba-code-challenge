@@ -45,3 +45,5 @@ function something()
 {
     // ..
 }
+
+require __DIR__.'/TestHelper.php';

@@ -56,7 +56,7 @@ class WellnessInterestController extends Controller
             $updatedUser = $action->execute($user, $ids);
 
             return response()->json([
-                'message' => 'Wellness interests updated successfully.',
+                'message' => 'Wellness Interests updated successfully.',
                 'data' => [
                     'wellness_interests' => WellnessInterestResource::collection($updatedUser->wellnessInterests),
                     'user' => UserResource::make($updatedUser),
