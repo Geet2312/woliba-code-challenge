@@ -39,12 +39,14 @@ class OtpController extends Controller
 
             if ($invitation === null) {
                 return response()->json([
-                    'message' => 'No invitation found for the provided email.',
+                    'data' => [
+                        'message' => 'No invitation found for the provided email.',
+                    ]
                 ], 404);
             }
 
             return response()->json([
-                'data' =>[
+                'data' => [
                     'user' => InvitationResource::make($invitation),
                 ],
             ]);
@@ -74,7 +76,7 @@ class OtpController extends Controller
             }
 
             return response()->json([
-                'data' =>[
+                'data' => [
                     'message' => 'If the email is valid, an OTP has been sent.',
                 ]
             ], 202);
@@ -108,10 +110,12 @@ class OtpController extends Controller
             }
 
             return response()->json([
-                'user'  => new UserResource($result['user']),
-                'token' => $result['token'],
+                'data' => [
+                    'user' => new UserResource($result['user']),
+                    'token' => $result['token'],
+                ]
             ]);
-            
+
 
         } catch (Throwable $e) {
             Log::error('Email OTP verification failed', ['error' => $e->getMessage()]);
