@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -93,5 +95,21 @@ class User extends Authenticatable implements JWTSubject
     public function setDobAttribute($value): void
     {
         $this->attributes['dob'] = $value ? Carbon::createFromFormat('m/d/Y', $value)->toDateString() : null;
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function wellnessInterest(): BelongsToMany
+    {
+     return $this->belongsToMany(WellnessInterest::class);   
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function wellbeingPillars(): BelongsToMany
+    {
+        return $this->belongsToMany(WellbeingPillar::class);
     }
 }
