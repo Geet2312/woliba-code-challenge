@@ -19,6 +19,16 @@
             border-radius: 6px;
             margin-top: 12px;
         }
+        .link-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            word-break: break-all;
+            margin-top: 12px;
+            color: #374151;
+        }
         .footer { font-size: 12px; color: #6b7280; padding: 16px 24px; border-top: 1px solid #eef2f7; }
         .copyright { font-size: 11px; color: #9ca3af; text-align: center; margin-top: 12px; }
     </style>
@@ -26,7 +36,7 @@
 <body>
 <div class="container">
     <div class="header">
-         <img src="{{ asset('email/logo.png') }}" alt="Woliba" width="120"> 
+        <img src="{{ asset('email/logo.png') }}" alt="Woliba" width="120">
         <h2 style="margin:0;">Woliba</h2>
     </div>
     <div class="content">
@@ -37,6 +47,14 @@
             You’ve been invited to join Woliba. Use the magic link below to continue.
         </p>
         <a href="{{ $signedLinkUrl }}" class="button">Register Now</a>
+
+        <p style="margin-top: 16px; font-size: 13px; color: #374151;">
+            Use the below link for testing:
+        </p>
+        <div class="link-box">
+            {{ $signedLinkUrl }}
+        </div>
+
         <p style="margin-top: 16px; font-size: 12px; color: #6b7280;">
             This link will expire soon and can be used only once.
         </p>
