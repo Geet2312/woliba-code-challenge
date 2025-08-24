@@ -23,7 +23,7 @@ class StoreWellbeingPillarsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pillars' => ['required', 'array', 'min:3'],
+            'pillars' => ['required', 'array','size:3'],
             'pillars.*' => ['required', 'distinct', 'exists:wellbeing_pillars,id'],
         ];
     }
