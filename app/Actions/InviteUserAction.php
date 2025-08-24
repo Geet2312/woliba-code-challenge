@@ -28,9 +28,15 @@ class InviteUserAction
         try {
             ['invitation' => $invitation, 'shouldSend' => $shouldSend] = $this->service->refreshOrCreate($firstName, $lastName, $email);
 
+            // todo - Debug log: temporarily outputs test data to avoid manual DB inspection
+            if (!$isMagicLink) {
+                Log::info('Classis Invite',['email' => $email]);
+            }
+            
             if ($shouldSend & $isMagicLink) {
                 $signedLink = $this->service->makeSignedLink($invitation);
-                
+
+                // todo - Debug log: temporarily outputs test data to avoid manual DB inspection
                 Log::info('Magic link generated', ['link' => $signedLink]);                // Route to invitee's email
                 
                 Notification::route('mail', $invitation->email)
