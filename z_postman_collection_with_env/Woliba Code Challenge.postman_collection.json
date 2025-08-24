@@ -1,0 +1,389 @@
+{
+	"info": {
+		"_postman_id": "811a680f-a718-4701-91c3-f553c2a716c9",
+		"name": "Woliba Code Challenge",
+		"description": "This project implements a secure backend API that supports passwordless authentication (Magic Link and OTP), profile completion, and wellness modules.\n\n---\n\n## Features\n\n### Invitation & Authentication Flow\n\n1. **Invite a User (Admin only)**\n    \n    - When an admin invites a user, the system normalizes the email and evaluates the invitation state:\n        \n        - **No existing invitation** → A new invitation is created with a token and expiry. An email is sent if `is_magic_link = true`.\n            \n        - **Already used** → The invitation cannot be reused, and no email is sent.\n            \n        - **Still valid and unused** → The system prevents resending to avoid duplicate invites.\n            \n        - **Expired but unused** → The token is rotated, names are updated, and a new email is sent (only if `is_magic_link = true`).\n            \n    - If `is_magic_link = false`, the invitation is stored in the database but no email is ever sent.\n        \n    - The API always responds with a generic success message, so clients cannot determine whether an email address exists in the system.\n        \n\n---\n\n1. **Verify Magic Link**\n    \n    - User clicks on signed URL.\n        \n    - Validates signature, burns token.\n        \n    - Creates or finds user from invitation.\n        \n    - Returns JWT + limited profile.\n        \n\n---\n\n1. **Verify Email**\n    \n    - User provides email.\n        \n    - System checks if an invitation exists.\n        \n    - Returns limited profile if found.\n        \n\n---\n\n1. **Send OTP**\n    \n    - Available **only after successful email verification** for users invited by admin.\n        \n    - Generates a 6-digit OTP, stores it, and sends to the verified email.\n        \n\n---\n\n1. **Verify OTP**\n    \n    - User submits email + OTP.\n        \n    - Create or find a user from invitation.\n        \n    - Validates and burns OTP.\n        \n    - Returns JWT + limited profile.\n        \n\n---\n\n### Profile Completion\n\nAfter authentication, users must complete registration by providing:\n\n- Password\n    \n- Date of Birth (MM/DD/YYYY)\n    \n- Contact number\n    \n- Confirmation flag\n    \n\n---\n\n### Wellness Interests\n\n- Users select multiple interests (e.g., Yoga, Meditation, Fitness).\n    \n- Stored in pivot table **`user_wellness_interest`**.\n    \n\n---\n\n### Wellbeing Pillars\n\n- Users must select exactly **three (3) pillars** from (Physical, Mental, Social, Financial, Emotional, etc).\n    \n- Stored in pivot table **`user_wellbeing_pillar`**.\n    \n- Saving pillars marks **`registration_complete = true`**.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26964464"
+	},
+	"item": [
+		{
+			"name": "Flow 1 - Passwordless",
+			"item": [
+				{
+					"name": "Invite User - Magic Link / Classic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\":\"{{$randomLastName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"email\":\"{{$randomEmail}}\",\n    \"is_magic_link\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}invite",
+							"host": [
+								"{{BASE_URL}}invite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Magic Link",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://woliba-code-challenge.test/api/magic-link/user?expires=1756041519&token=13351422-d826-4127-819d-ac58c5e2c011&signature=1d8c8d2f29fa4cfbedc5d4ac493ea8dcc4c672c9ab636ac50d89e62ca1ec7f8a",
+							"protocol": "http",
+							"host": [
+								"woliba-code-challenge",
+								"test"
+							],
+							"path": [
+								"api",
+								"magic-link",
+								"user"
+							],
+							"query": [
+								{
+									"key": "expires",
+									"value": "1756041519"
+								},
+								{
+									"key": "token",
+									"value": "13351422-d826-4127-819d-ac58c5e2c011"
+								},
+								{
+									"key": "signature",
+									"value": "1d8c8d2f29fa4cfbedc5d4ac493ea8dcc4c672c9ab636ac50d89e62ca1ec7f8a"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flow 2 - Email + OTP",
+			"item": [
+				{
+					"name": "Send OTP",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{BASE_URL}}send-otp?email=bruce.oberbrunner@yahoo.com",
+							"host": [
+								"{{BASE_URL}}send-otp"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "bruce.oberbrunner@yahoo.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{BASE_URL}}verify-email?email=bruce.oberbrunner@yahoo.com",
+							"host": [
+								"{{BASE_URL}}verify-email"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "bruce.oberbrunner@yahoo.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{BASE_URL}}verify-otp?email=bruce.oberbrunner@yahoo.com&otp=354999",
+							"host": [
+								"{{BASE_URL}}verify-otp"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "bruce.oberbrunner@yahoo.com"
+								},
+								{
+									"key": "otp",
+									"value": "354999"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Common Flow",
+			"item": [
+				{
+					"name": "Wellness Interest",
+					"item": [
+						{
+							"name": "List Wellness Interests",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{JWT_TOKEN}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}wellness-interests",
+									"host": [
+										"{{BASE_URL}}wellness-interests"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Save User Wellness Interest",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{JWT_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"interests\": [\n        1,\n        3,\n        4\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}wellness-interests",
+									"host": [
+										"{{BASE_URL}}wellness-interests"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Wellbeing Pillar",
+					"item": [
+						{
+							"name": "List Wellbeing Pillar",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{JWT_TOKEN}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}wellbeing-pillars",
+									"host": [
+										"{{BASE_URL}}wellbeing-pillars"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Save User Wellbeing Pillars (Registration Completed)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{JWT_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"pillars\": [\n        1,\n        2,\n        4\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}wellbeing-pillars",
+									"host": [
+										"{{BASE_URL}}wellbeing-pillars"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Profile",
+					"item": [
+						{
+							"name": "Update User Profile",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{JWT_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\":\"MyPass123!\",\n    \"password_confirmation\": \"MyPass123!\",\n    \"dob\":\"08/22/2025\",\n    \"contact_number\":\"908765432\",\n    \"confirmation_flag\":true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}user/profile",
+									"host": [
+										"{{BASE_URL}}user"
+									],
+									"path": [
+										"profile"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
