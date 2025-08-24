@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\SetUserWellnessInterestAction;
 use App\Http\Requests\StoreWellnessInterestsRequest;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\WellnessInterestResource;
 use App\Services\WellnessInterestService;
 use Illuminate\Http\JsonResponse;
@@ -56,11 +57,15 @@ class WellnessInterestController extends Controller
 
             return response()->json([
                 'message' => 'Wellness interests updated successfully.',
-                'data' => WellnessInterestResource::collection($updatedUser->wellnessInterests),
+                'data' => [
+                    'wellness_interests' => WellnessInterestResource::collection($updatedUser->wellnessInterests),
+                    'user' => UserResource::make($updatedUser),
+                ]
+
             ], 200);
 
         } catch (Throwable $e) {
-            Log::error('Failed to save Wellness Interest failed', [
+            Log::error('Failed to save Wellness Interest.', [
                     'error' => $e->getMessage()]
             );
 
