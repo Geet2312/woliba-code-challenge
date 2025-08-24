@@ -35,10 +35,12 @@ test('valid token returns limited profile and burns token', function () {
     $response = test()->getJson($link);
     $response->assertOk()
         ->assertJsonStructure([
-            'user' => ['first_name', 'last_name', 'email'],
-            'token',
+            'data' => [
+                'user' => ['first_name', 'last_name', 'email'],
+                'token',
+            ]
         ])
-        ->assertJsonPath('user.email', $email);
+        ->assertJsonPath('data.user.email', $email);
     
     $invitation->refresh();
     expect($invitation->token_used_at)->not->toBeNull();

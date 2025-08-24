@@ -35,8 +35,9 @@ class MagicLinkController extends Controller
             }
 
             return response()->json([
-                'user' => new MagicLinkUserResponse($result['user']),
-                'token' => $result['token'],
+                'data' => [
+                    'user' => new MagicLinkUserResponse($result['user']),
+                    'token' => $result['token'],]
             ]);
 
         } catch (Throwable $e) {

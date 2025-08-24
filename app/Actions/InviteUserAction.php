@@ -30,8 +30,9 @@ class InviteUserAction
 
             if ($shouldSend & $isMagicLink) {
                 $signedLink = $this->service->makeSignedLink($invitation);
-
-                // Route to invitee's email
+                
+                Log::info('Magic link generated', ['link' => $signedLink]);                // Route to invitee's email
+                
                 Notification::route('mail', $invitation->email)
                     ->notify(new InvitationEmail($invitation, $signedLink));
             }
