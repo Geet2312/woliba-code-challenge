@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\EmailOtp;
 use App\Notifications\SendEmailOtp;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Random\RandomException;
 
@@ -21,6 +22,9 @@ class EmailOtpService
 
         $otp = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
+        // todo - Debug log: temporarily outputs test data to avoid manual DB inspection
+        Log::info("Generating OTP for $email", ['OTP' => $otp]);
+        
         EmailOtp::create([
             'email' => $email,
             'otp' => $otp,
