@@ -21,6 +21,7 @@ class InviteUserAction
      * @param string $firstName
      * @param string $lastName
      * @param string $email
+     * @param bool $isMagicLink
      */
     public function execute(string $firstName, string $lastName, string $email, bool $isMagicLink): void
     {
