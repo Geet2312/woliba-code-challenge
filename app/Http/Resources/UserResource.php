@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'dob'  => $this->dob,
             'contact_number' => $this->contact_number,
             'confirmation_flag' => $this->confirmation_flag,
+            'registration_complete' => $this->registration_complete,
         ];
     }
 }
