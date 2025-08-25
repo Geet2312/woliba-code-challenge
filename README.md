@@ -130,9 +130,6 @@ Note: A Postman Collection with the corresponding environment is included in the
 
 ## Setup Instructions
 
-Configure your environment:
-- Update mailer settings in `.env` (e.g., MAIL_MAILER, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD).
-- Update database settings in `.env` (DB_DATABASE, DB_USERNAME, DB_PASSWORD) to match your local database setup.
 
 ```bash
 # Install dependencies
@@ -144,7 +141,12 @@ cp .env.example .env
 # Generate app key & JWT secret
 php artisan key:generate
 php artisan jwt:secret
+```
+Configure your environment:
+- Update mailer settings in `.env` (e.g., MAIL_MAILER, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD).
+- Update database settings in `.env` (DB_DATABASE, DB_USERNAME, DB_PASSWORD) to match your local database setup.
 
+```bash
 # Run migrations & seeders
 php artisan migrate --seed
 
