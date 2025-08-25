@@ -118,7 +118,7 @@ After authentication, users must be registration by providing:
 
 Before setting up the project, ensure you have the following installed and configured on your system:
 
-- **PHP 8.4+** – Required for running the Laravel 11 application.
+- **PHP 8.2+** – Required for running the Laravel 11 application.
 - **Composer 2.x** – For managing PHP dependencies.
 - **MySQL 8.x** – Primary database used by the API.
 - **MailHog** – Local SMTP server for testing email (OTP and Magic Link).
@@ -129,6 +129,10 @@ Note: A Postman Collection with the corresponding environment is included in the
 
 
 ## Setup Instructions
+
+Configure your environment:
+- Update mailer settings in `.env` (e.g., MAIL_MAILER, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD).
+- Update database settings in `.env` (DB_DATABASE, DB_USERNAME, DB_PASSWORD) to match your local database setup.
 
 ```bash
 # Install dependencies
